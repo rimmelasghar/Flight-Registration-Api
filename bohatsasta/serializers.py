@@ -1,4 +1,5 @@
 from dataclasses import field
+import profile
 from pyexpat import model
 from rest_framework import serializers
 from .models import Flight,Ticket,Details,Card
@@ -30,9 +31,11 @@ class CardSerializers(serializers.ModelSerializer):
         fields = '__all__'
 
 class TicketSerializers(serializers.ModelSerializer):
+    profile = serializers.StringRelatedField(many=False)
+    details = serializers.StringRelatedField(many = False)
     class Meta:
         model = Ticket
-        fields = '__all__'
+        fields = ('ticketid','status','profile','details')
 
 #Serializer to Register User
 class RegisterSerializer(serializers.ModelSerializer):

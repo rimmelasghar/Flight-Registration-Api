@@ -19,21 +19,23 @@ from rest_framework.permissions import AllowAny
 from rest_framework import generics
 from rest_framework import status
 from django.http import Http404
+from rest_framework.authentication import TokenAuthentication
+
+
+
 
 class FlightView(viewsets.ModelViewSet):
     serializer_class = FlightSerializers
     queryset = Flight.objects.all()
 
 
-
-class userView(viewsets.ModelViewSet):
-    serializer_class = UserSerializer
-    queryset = User.objects.all()
-
-
 class DetailView(viewsets.ModelViewSet):
     serializer_class = DetailsSerializers
     queryset = Details.objects.all()
+
+####
+### Card - Views
+####
 
 class CardList(APIView):
     # permission_classes = [IsAuthenticated] 
@@ -41,7 +43,6 @@ class CardList(APIView):
     def get(self,request):
         card = Card.objects.all()
         card_serializers = CardSerializers(card,many=True)
-        # return JsonResponse(card_serializers.data,safe=False)
         return Response(card_serializers.data)
     def post(self,request,format = None):
         card_serializers = CardSerializers(data = request.data)
@@ -49,7 +50,8 @@ class CardList(APIView):
             card_serializers.save()
             return Response(card_serializers.data,status=status.HTTP_201_CREATED)
         return Response(card_serializers.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+
 class CardCRUD(APIView):
     # List all snippets, or create a new snippet.
     def get_object(self, pk):
@@ -78,24 +80,29 @@ class CardCRUD(APIView):
     
 
 
-class TicketView(viewsets.ModelViewSet):
-    serializer_class = TicketSerializers
-    queryset = Ticket.objects.all()
+class TicketView(APIView):
+    def get(self,request):
+        ticket = Ticket.objects.all()
+        ticket_serializers = TicketSerializers(ticket,many=True)
+        print(ticket_serializers.data)
+        return Response(ticket_serializers.data)
+
+####
+### USER - Views
+####
+# Class based view to Get User Details using Token Authentication
+class UserDetailAPI(APIView):
+  authentication_classes = (TokenAuthentication,)
+  permission_classes = (AllowAny,)
+  def get(self,request,*args,**kwargs):
+    user = User.objects.get(id=request.user.id)
+    serializer = UserSerializer(user)
+    return Response(serializer.data)
 
 #Class based view to register user
 class RegisterUserAPIView(generics.CreateAPIView):
     permission_classes = (AllowAny,)
     serializer_class = RegisterSerializer
-#  class ExampleView(APIView):
-#     authentication_classes = [SessionAuthentication, BasicAuthentication]
-#     permission_classes = [IsAuthenticated]
-
-#     def get(self, request, format=None):
-#         content = {
-#             'user': str(request.user),  # `django.contrib.auth.User` instance.
-#             'auth': str(request.auth),  # None
-#         }
-#         return Response(content)
 
 
 class HelloView(APIView):

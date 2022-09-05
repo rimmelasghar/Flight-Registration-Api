@@ -14,12 +14,16 @@ class Flight(models.Model):
     seats  = models.PositiveIntegerField(default=0)
 
     def __str__(self):
-        return self.name
+        return self.num
     
 class Details(models.Model):
     flight = models.ForeignKey(Flight,related_name='details',on_delete = models.CASCADE)
     price = models.PositiveIntegerField(default=0)
     available_seats = models.PositiveIntegerField(default=0)
+    
+    def __str__(self):
+        return self.flight.num
+
     
 class Card(models.Model):
     number = models.CharField(max_length=30)
