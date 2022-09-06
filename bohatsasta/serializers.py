@@ -31,8 +31,8 @@ class CardSerializers(serializers.ModelSerializer):
         fields = '__all__'
 
 class TicketSerializers(serializers.ModelSerializer):
-    profile = serializers.StringRelatedField(many=False)
-    details = serializers.StringRelatedField(many = False)
+    # profile = serializers.StringRelatedField(many=False)
+    # details = serializers.StringRelatedField(many = False)
     class Meta:
         model = Ticket
         fields = ('ticketid','status','profile','details')

@@ -81,11 +81,21 @@ class CardCRUD(APIView):
 
 
 class TicketView(APIView):
-    def get(self,request):
-        ticket = Ticket.objects.all()
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (AllowAny,)
+    def get(self,request,*args,**kwargs):
+        user = User.objects.get(id=request.user.id)
+        ticket = Ticket.objects.filter(profile = user)
         ticket_serializers = TicketSerializers(ticket,many=True)
         print(ticket_serializers.data)
         return Response(ticket_serializers.data)
+    def post(self,request,format = None):
+        ticket_serializers = TicketSerializers(data = request.data)
+        if ticket_serializers.is_valid():
+            ticket_serializers.save()
+            return Response(ticket_serializers.data,status=status.HTTP_201_CREATED)
+        return Response(ticket_serializers.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 
 ####
 ### USER - Views

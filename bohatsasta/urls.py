@@ -18,4 +18,5 @@ urlpatterns = [
     path('register/',views.RegisterUserAPIView.as_view(), name='register'),
     path('user/',views.UserDetailAPI.as_view(),name='user'),
     path('ticket/',views.TicketView.as_view(),name = 'ticket'),
+    
 ]
